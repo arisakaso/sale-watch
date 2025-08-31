@@ -31,7 +31,7 @@ export async function fetchReservations(): Promise<Reservation[]> {
 const DUMMY: Reservation[] = [
   {
     id: "1",
-    item: "RICOH GR IV 1次抽選",
+    item: "RICOH GR IV 1次抽選 dummy",
     status: "受付中",
     deadline: "2025-09-10 23:59",
     link: "#",
