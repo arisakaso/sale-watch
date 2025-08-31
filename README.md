@@ -1,5 +1,43 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Supabase 連携の準備
+
+本リポジトリには Supabase クライアント（`@supabase/supabase-js`）の導入と、サーバー側から予約情報を取得する関数を用意しています。以下の手順でローカル接続を設定できます。
+
+1) 環境変数を設定
+
+```bash
+cp .env.example .env.local
+# `.env.local` を編集して以下を設定
+# SUPABASE_URL=あなたのプロジェクトURL
+# SUPABASE_ANON_KEY=Anonキー
+```
+
+2) テーブル作成（Supabase SQL Editor）
+
+```sql
+create table if not exists reservations (
+  id uuid primary key default gen_random_uuid(),
+  item text not null,
+  status text not null,
+  deadline timestamptz null,
+  link text not null
+);
+
+-- RLS を有効化し、公開読み取りを許可
+alter table reservations enable row level security;
+create policy "public read reservations" on reservations
+  for select using (true);
+```
+
+3) 起動して確認
+
+```bash
+npm run dev
+```
+
+トップページ（`/`）で「予約情報」テーブルに Supabase のデータが表示されます。環境変数が未設定の場合は、ダミーデータが表示されます。
+
 ## Getting Started
 
 First, run the development server:
