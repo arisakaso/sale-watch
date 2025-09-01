@@ -19,3 +19,30 @@ export function formatJPDateTime(value: string | null | undefined): string {
   return fmt.format(d);
 }
 
+// 期限が現在時刻より過去かどうか
+export function isPast(value: string | null | undefined): boolean {
+  if (!value) return false;
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return false;
+  return d.getTime() < Date.now();
+}
+
+// 現在からの相対時間（ざっくり、日本語）
+// 例: 「あと3日」「あと2時間」「あと15分」「締切済み」
+export function relativeFromNowJP(value: string | null | undefined): string {
+  if (!value) return "未定";
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return "—";
+
+  const diffMs = d.getTime() - Date.now();
+  if (diffMs < 0) return "締切済み";
+
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (diffMs < minute) return "まもなく";
+  if (diffMs < hour) return `あと${Math.floor(diffMs / minute)}分`;
+  if (diffMs < day) return `あと${Math.floor(diffMs / hour)}時間`;
+  return `あと${Math.floor(diffMs / day)}日`;
+}
