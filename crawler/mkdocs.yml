@@ -1,0 +1,52 @@
+site_name: crawler
+repo_url: https://github.com/arisakaso/crawler
+site_url: https://arisakaso.github.io/crawler
+site_description: crawler
+site_author: Sohei Arisaka
+edit_uri: edit/main/docs/
+repo_name: arisakaso/crawler
+copyright: Maintained by <a href="https://arisakaso.com">arisakaso</a>.
+
+nav:
+  - Home: index.md
+  - Modules: modules.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["crawler"]
+theme:
+  name: material
+  feature:
+    tabs: true
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/arisakaso/crawler
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/crawler
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true

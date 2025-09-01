@@ -7,4 +7,3 @@ export interface Reservation {
   deadline: string | null; // ISO文字列 or null
   link: string;
 }
-
