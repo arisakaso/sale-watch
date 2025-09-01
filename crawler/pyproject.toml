@@ -1,5 +1,5 @@
 [project]
-name = "crawler"
+name = "sale-watch-crawler"
 version = "0.0.1"
 description = "crawler"
 authors = [{ name = "Sohei Arisaka", email = "sohei.arisaka@gmail.com" }]
@@ -19,9 +19,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://arisakaso.github.io/crawler/"
-Repository = "https://github.com/arisakaso/crawler"
-Documentation = "https://arisakaso.github.io/crawler/"
+Homepage = "https://github.com/arisakaso/sale-watch"
+Repository = "https://github.com/arisakaso/sale-watch"
+Documentation = "https://github.com/arisakaso/sale-watch/tree/main/crawler"
 
 [dependency-groups]
 dev = [
