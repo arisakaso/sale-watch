@@ -67,3 +67,44 @@ To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookie
 ---
 
 Repository initiated with [fpgmaas/cookiecutter-uv](https://github.com/fpgmaas/cookiecutter-uv).
+
+## Gemini（google-genai）を使った抽出の実行方法（最小）
+
+環境変数に Gemini API キーを設定し、対象URLを指定して実行します。
+本リポジトリでは `.env.local`（リポジトリルート）を自動読込します。
+
+```bash
+# どちらかでOK（.env.local推奨）
+# 1) .env.local に GEMINI_API_KEY=... を記載（自動読込）
+uv run python -m crawler --url "https://ricohimagingstore.com/Form/Product/ProductDetail.aspx?shop=0&pid=S0001551&cat=002010" --vendor "RICOH 公式"
+
+# 2) 直接環境変数で渡す場合
+export GEMINI_API_KEY=YOUR_KEY
+uv run python -m crawler --url "https://ricohimagingstore.com/Form/Product/ProductDetail.aspx?shop=0&pid=S0001551&cat=002010" --vendor "RICOH 公式"
+```
+
+出力は以下のJSONスキーマ（1オブジェクト）です。
+
+```json
+{
+  "item": "...",
+  "vendor": "RICOH 公式",
+  "status": "受付中" | "予定" | "終了",
+  "entryStartAt": "2025-09-01T10:00:00+09:00" | null,
+  "entryEndAt": "2025-09-10T23:59:00+09:00" | null,
+  "lotteryAt": "2025-09-12T12:00:00+09:00" | null,
+  "salesStartAt": "2025-09-20T10:00:00+09:00" | null,
+  "link": "https://..."
+}
+```
+
+テスト（GEMINI_API_KEYがあり、かつ google-genai が導入されている場合のみ実行。.env.local も可）
+
+```bash
+# .env.local を利用する場合はそのまま
+uv run pytest -k gemini_extractor
+
+# 直接渡す場合
+export GEMINI_API_KEY=YOUR_KEY
+uv run pytest -k gemini_extractor
+```

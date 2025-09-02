@@ -6,6 +6,13 @@ authors = [{ name = "Sohei Arisaka", email = "sohei.arisaka@gmail.com" }]
 readme = "README.md"
 keywords = ['python']
 requires-python = ">=3.9,<4.0"
+dependencies = [
+    "google-genai>=0.3.0",
+    "pydantic>=2.7",
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+    "ty>=0.0.1a19",
+]
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
@@ -29,7 +36,7 @@ dev = [
     "pre-commit>=2.20.0",
     "tox-uv>=1.11.3",
 
-    "ty>=0.0.1a16",
+    "ty>=0.0.1a19",
     "pytest-cov>=4.0.0",
     "ruff>=0.11.5",
     "mkdocs>=1.4.2",
