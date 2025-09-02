@@ -16,8 +16,20 @@ export async function fetchReservations(): Promise<Reservation[]> {
   const supabase = createClient(url, anon);
   const { data, error } = await supabase
     .from("reservations")
-    .select("id,item,status,deadline,link")
-    .order("deadline", { ascending: true, nullsFirst: false });
+    .select(
+      [
+        "id",
+        "item",
+        "vendor",
+        "status",
+        "entryStartAt:entry_start_at",
+        "entryEndAt:entry_end_at",
+        "lotteryAt:lottery_at",
+        "salesStartAt:sales_start_at",
+        "link",
+      ].join(",")
+    )
+    .order("entry_end_at", { ascending: true, nullsFirst: false });
 
   if (error) {
     console.error("Supabase fetch error:", error);
@@ -31,23 +43,35 @@ export async function fetchReservations(): Promise<Reservation[]> {
 const DUMMY: Reservation[] = [
   {
     id: "1",
-    item: "RICOH GR IV 1次抽選 dummy",
+    item: "RICOH GR IV 1次抽選",
+    vendor: "RICOH 公式",
     status: "受付中",
-    deadline: "2025-09-10 23:59",
+    entryStartAt: "2025-09-01 10:00",
+    entryEndAt: "2025-09-10 23:59",
+    lotteryAt: "2025-09-12 12:00",
+    salesStartAt: "2025-09-20 10:00",
     link: "#",
   },
   {
     id: "2",
     item: "RICOH GR IV 2次抽選",
+    vendor: "量販店A",
     status: "予定",
-    deadline: null,
+    entryStartAt: null,
+    entryEndAt: null,
+    lotteryAt: null,
+    salesStartAt: null,
     link: "#",
   },
   {
     id: "3",
     item: "RICOH GR IV 先行予約",
+    vendor: "量販店B",
     status: "終了",
-    deadline: "2025-08-20 23:59",
+    entryStartAt: "2025-08-10 10:00",
+    entryEndAt: "2025-08-20 23:59",
+    lotteryAt: null,
+    salesStartAt: "2025-09-05 10:00",
     link: "#",
   },
 ];

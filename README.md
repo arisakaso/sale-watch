@@ -19,8 +19,12 @@ cp .env.example .env.local
 create table if not exists reservations (
   id uuid primary key default gen_random_uuid(),
   item text not null,
+  vendor text not null,
   status text not null,
-  deadline timestamptz null,
+  entry_start_at timestamptz null,
+  entry_end_at timestamptz null,
+  lottery_at timestamptz null,
+  sales_start_at timestamptz null,
   link text not null
 );
 
@@ -36,7 +40,7 @@ create policy "public read reservations" on reservations
 npm run dev
 ```
 
-トップページ（`/`）で「予約情報」テーブルに Supabase のデータが表示されます。環境変数が未設定の場合は、ダミーデータが表示されます。
+トップページ（`/`）で「予約情報」テーブルに Supabase のデータが表示されます（表示列: アイテム / 販売元 / ステータス / 受付開始日 / 受付終了日 / 抽選発表日 / 販売開始日 / リンク）。環境変数が未設定の場合は、ダミーデータが表示されます。
 
 ## Getting Started
 
