@@ -96,7 +96,7 @@ def generate_from_url(url: str, vendor_hint: str | None = None) -> dict[str, Any
                 parts=[
                     Part.from_text(text=prompt),
                     # URLコンテキスト(利用可能な場合)
-                    Part.from_uri(uri=url, mime_type="text/html"),
+                    Part.from_uri(file_uri=url, mime_type="text/html"),
                 ],
             )
         ]
