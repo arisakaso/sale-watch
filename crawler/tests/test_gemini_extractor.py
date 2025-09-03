@@ -1,16 +1,10 @@
 import os
 
 import pytest
+from google import genai
 
 from crawler.env import load_env_local
 from crawler.extractor import extract_reservation
-
-try:
-    from google import genai as _genai  # noqa: F401
-
-    _GENAI_AVAILABLE = True
-except Exception:  # pragma: no cover - best-effort for CI environments
-    _GENAI_AVAILABLE = False
 
 TARGET_URL = "https://ricohimagingstore.com/Form/Product/ProductDetail.aspx?shop=0&pid=S0001551&cat=002010"
 
@@ -18,9 +12,18 @@ TARGET_URL = "https://ricohimagingstore.com/Form/Product/ProductDetail.aspx?shop
 # まず .env.local/.env を読み込んでからスキップ判定
 load_env_local()
 pytestmark = pytest.mark.skipif(
-    not (os.environ.get("GEMINI_API_KEY") and _GENAI_AVAILABLE),
-    reason="Requires GEMINI_API_KEY and google-genai",
+    not os.environ.get("GEMINI_API_KEY"),
+    reason="Requires GEMINI_API_KEY",
 )
+
+
+def test_gemini_ping():
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])  # type: ignore[name-defined]
+    model = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
+
+    resp = client.models.generate_content(model=model, contents="ping")
+    text = getattr(resp, "text", None) or str(resp)
+    assert isinstance(text, str) and len(text) > 0
 
 
 def test_extract_reservation_live():
