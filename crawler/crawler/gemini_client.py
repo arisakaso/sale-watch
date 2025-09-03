@@ -6,7 +6,6 @@ import re
 from typing import Any
 
 from google import genai
-from google.genai.types import Content, GenerateContentConfig, Part
 
 from .env import load_env_local
 
@@ -20,7 +19,7 @@ def _ensure_client() -> genai.Client:
     return genai.Client(api_key=api_key)
 
 
-def _build_prompt(vendor_hint: str | None) -> str:
+def _build_prompt(url: str, vendor_hint: str | None) -> str:
     vendor_clause = (
         f"ベンダー名は原則『{vendor_hint}』を返してください。該当しなければページやドメインから判断してください。"
         if vendor_hint
@@ -30,6 +29,7 @@ def _build_prompt(vendor_hint: str | None) -> str:
     return f"""
 あなたはEC/販売ページから販売スケジュール情報を抽出するアシスタントです。
 次のURLの内容をもとに、以下のJSONスキーマに完全準拠した1オブジェクトを日本語で生成してください。
+対象URL: {url}
 
 制約:
 - 出力は厳密なJSONのみ(前後に説明やコードフェンスなし)。
@@ -86,33 +86,14 @@ def _resp_text(resp: Any) -> str:
 
 def generate_from_url(url: str, vendor_hint: str | None = None) -> dict[str, Any]:
     client = _ensure_client()
-    prompt = _build_prompt(vendor_hint)
-    model_name = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
+    prompt = _build_prompt(url, vendor_hint)
+    model_name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
 
-    try:
-        contents = [
-            Content(
-                role="user",
-                parts=[
-                    Part.from_text(text=prompt),
-                    # URLコンテキスト(利用可能な場合)
-                    Part.from_uri(file_uri=url, mime_type="text/html"),
-                ],
-            )
-        ]
-    except Exception:
-        # Part.from_uri が利用できない場合はテキストにURLを埋め込む
-        contents = [Content(role="user", parts=[Part.from_text(text=f"{prompt}\n対象URL: {url}")])]
+    # URL Context Tool を有効化し、プロンプト内でURLを参照させる
+    config = {
+        "tools": [{"url_context": {}}],
+    }
 
-    try:
-        resp = client.models.generate_content(
-            model=model_name,
-            contents=contents,
-            config=GenerateContentConfig(response_mime_type="application/json"),
-        )
-    except Exception:
-        # URLパーツやconfigが原因で失敗した場合は、テキストのみで再試行
-        simple_contents = [Content(role="user", parts=[Part.from_text(text=f"{prompt}\n対象URL: {url}")])]
-        resp = client.models.generate_content(model=model_name, contents=simple_contents)
+    resp = client.models.generate_content(model=model_name, contents=[prompt], config=config)
 
     return _parse_json(_resp_text(resp))

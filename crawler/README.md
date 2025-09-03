@@ -83,6 +83,8 @@ export GEMINI_API_KEY=YOUR_KEY
 uv run python -m crawler --url "https://ricohimagingstore.com/Form/Product/ProductDetail.aspx?shop=0&pid=S0001551&cat=002010" --vendor "RICOH 公式"
 ```
 
+デフォルトのモデルは `gemini-2.5-flash` です（`GEMINI_MODEL` で上書き可能）。URL Context Tool を使用して指定URLの内容をコンテキストとして渡します。
+
 出力は以下のJSONスキーマ（1オブジェクト）です。
 
 ```json
